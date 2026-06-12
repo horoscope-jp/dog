@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>わんこの星占い</title>
+  <meta name="description" content="可愛い犬の画像で毎日の星座占いをお届け">
+  <link rel="icon" href="favicon.png" type="image/png">
+
+  <!-- OGP -->
+  <meta property="og:title" content="わんこの星占い">
+  <meta property="og:description" content="可愛い犬の画像で毎日の星座占いをお届け">
+  <meta property="og:image" content="">
+  <meta property="og:type" content="website">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#EDE4D5">
+
+  <!-- iOS ホーム画面対応 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="わんこ占い">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 認証画面 -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-inner">
+
+      <div class="auth-title-area">
+        <h1 class="auth-title">🐾 わんこの星占い 🐾</h1>
+        <p class="auth-date" id="auth-date"></p>
+      </div>
+
+      <div class="auth-img-wrap">
+        <img id="auth-bg-img" class="auth-bg-img" src="" alt="">
+        <div class="auth-overlay">
+          <p class="auth-overlay-label">メールアドレスを入力してください</p>
+          <div class="auth-input-wrap">
+            <input
+              type="email"
+              id="auth-email"
+              class="auth-input"
+              placeholder="example@email.com"
+              autocomplete="email"
+            />
+          </div>
+          <button id="auth-submit-btn" class="auth-submit-btn">✦ はじめる</button>
+          <p id="auth-error" class="auth-error" hidden></p>
+        </div>
+      </div>
+
+      <div class="auth-bottom-pad"></div>
+    </div>
+  </div>
+
+  <div class="container" hidden>
+    <header>
+      <h1>🐾 わんこ<small>の</small>星占い 🐾</h1>
+      <p class="date" id="today-date"></p>
+    </header>
+
+    <!-- Page: top -->
+    <section id="page-top" class="page">
+
+      <!-- PWAインストールバナー -->
+      <div id="install-banner" class="install-banner" hidden>
+        <span class="install-banner-icon">📲</span>
+        <span class="install-banner-text" id="install-banner-text">ホーム画面に追加できます</span>
+        <button id="install-btn" class="install-btn">追加する</button>
+        <button id="install-close" class="install-close" aria-label="閉じる">✕</button>
+      </div>
+
+      <!-- iOSインストール手順ポップアップ -->
+      <div id="ios-popup-overlay" class="ios-popup-overlay" hidden></div>
+      <div id="ios-popup" class="ios-popup" hidden>
+        <button id="ios-popup-close" class="ios-popup-close" aria-label="閉じる">✕</button>
+        <p class="ios-popup-title">📲 ホーム画面への追加方法</p>
+        <ul class="ios-steps">
+          <li>
+            <span class="step-num">1</span>
+            <span class="step-body">画面下部の <strong>共有ボタン</strong> をタップ<br><span class="step-sub">「⬆️」のマークのボタンです</span></span>
+          </li>
+          <li>
+            <span class="step-num">2</span>
+            <span class="step-body">メニューをスクロールして<br><strong>「ホーム画面に追加」</strong> をタップ<br><span class="step-sub">「＋」マークのアイコンが目印です</span></span>
+          </li>
+          <li>
+            <span class="step-num">3</span>
+            <span class="step-body">右上の <strong>「追加」</strong> をタップして完了<br><span class="step-sub">アプリのように起動できます ✦</span></span>
+          </li>
+        </ul>
+      </div>
+
+      <p class="label">✦ 星座を選んでください ✦</p>
+      <div class="sign-grid" id="sign-grid"></div>
+    </section>
+
+    <!-- Page: 総合運 -->
+    <section id="page-overall" class="page fortune-page" hidden>
+      <div class="fortune-img-area">
+        <div class="fortune-page-heading">🐾 わんこの星占い 🐾</div>
+        <div class="fortune-img-frame">
+          <img class="fortune-img" id="dog-img-overall" src="" alt="" onerror="this.onerror=null;this.src='./images/fallback-1.jpg'">
+          <div class="sign-overlay-top">
+            <div class="sign-icon-sm" id="portrait-overall"></div>
+            <span class="sign-header-name" id="charname-overall"></span>
+          </div>
+          <div class="lucky-overlay">
+            <div class="lucky-overlay-inner">
+              <span class="lucky-overlay-badge">✦ ラッキーカラー：<span id="lucky-color"></span></span>
+              <span class="lucky-overlay-badge">✦ ラッキーナンバー：<span id="lucky-number"></span></span>
+            </div>
+          </div>
+        </div>
+        <div class="fortune-title-below">
+          <h2 class="fortune-title" id="overall-title"></h2>
+        </div>
+      </div>
+      <div class="fortune-content card-overall">
+        <div class="stars" id="stars-overall"></div>
+        <p class="fortune-text" id="text-overall"></p>
+      </div>
+      <div class="nav-buttons fortune-nav">
+        <button class="nav-btn back-btn" id="overall-back">← 戻る</button>
+        <button class="nav-btn next-btn" id="overall-next">次へ →</button>
+      </div>
+    </section>
+
+    <!-- Page: 恋愛運 -->
+    <section id="page-love" class="page fortune-page" hidden>
+      <div class="fortune-img-area">
+        <div class="fortune-page-heading">🐾 わんこの星占い 🐾</div>
+        <div class="fortune-img-frame">
+          <img class="fortune-img" id="dog-img-love" src="" alt="" onerror="this.onerror=null;this.src='./images/fallback-2.jpg'">
+          <div class="sign-overlay-top">
+            <div class="sign-icon-sm" id="portrait-love"></div>
+            <span class="sign-header-name" id="charname-love"></span>
+          </div>
+          <div class="lucky-overlay">
+            <div class="lucky-overlay-inner">
+              <span class="lucky-overlay-badge">✦ ラッキーカラー：<span id="lucky-color-love"></span></span>
+              <span class="lucky-overlay-badge">✦ ラッキーナンバー：<span id="lucky-number-love"></span></span>
+            </div>
+          </div>
+        </div>
+        <div class="fortune-title-below">
+          <h2 class="fortune-title" id="love-title"></h2>
+        </div>
+      </div>
+      <div class="fortune-content card-love">
+        <div class="stars" id="stars-love"></div>
+        <p class="fortune-text" id="text-love"></p>
+      </div>
+      <div class="nav-buttons fortune-nav">
+        <button class="nav-btn back-btn" id="love-back">← 戻る</button>
+        <button class="nav-btn next-btn" id="love-next">次へ →</button>
+      </div>
+    </section>
+
+    <!-- Page: 仕事運 -->
+    <section id="page-work" class="page fortune-page" hidden>
+      <div class="fortune-img-area">
+        <div class="fortune-page-heading">🐾 わんこの星占い 🐾</div>
+        <div class="fortune-img-frame">
+          <img class="fortune-img" id="dog-img-work" src="" alt="" onerror="this.onerror=null;this.src='./images/fallback-3.jpg'">
+          <div class="sign-overlay-top">
+            <div class="sign-icon-sm" id="portrait-work"></div>
+            <span class="sign-header-name" id="charname-work"></span>
+          </div>
+          <div class="lucky-overlay">
+            <div class="lucky-overlay-inner">
+              <span class="lucky-overlay-badge">✦ ラッキーカラー：<span id="lucky-color-work"></span></span>
+              <span class="lucky-overlay-badge">✦ ラッキーナンバー：<span id="lucky-number-work"></span></span>
+            </div>
+          </div>
+        </div>
+        <div class="fortune-title-below">
+          <h2 class="fortune-title" id="work-title"></h2>
+        </div>
+      </div>
+      <div class="fortune-content card-work">
+        <div class="stars" id="stars-work"></div>
+        <p class="fortune-text" id="text-work"></p>
+      </div>
+      <div class="nav-buttons fortune-nav">
+        <button class="nav-btn back-btn" id="work-back">← 戻る</button>
+        <button class="nav-btn next-btn" id="work-next">次へ →</button>
+      </div>
+    </section>
+
+    <!-- Page: 金運 -->
+    <section id="page-money" class="page fortune-page" hidden>
+      <div class="fortune-img-area">
+        <div class="fortune-page-heading">🐾 わんこの星占い 🐾</div>
+        <div class="fortune-img-frame">
+          <img class="fortune-img" id="dog-img-money" src="" alt="" onerror="this.onerror=null;this.src='./images/fallback-4.jpg'">
+          <div class="sign-overlay-top">
+            <div class="sign-icon-sm" id="portrait-money"></div>
+            <span class="sign-header-name" id="charname-money"></span>
+          </div>
+          <div class="lucky-overlay">
+            <div class="lucky-overlay-inner">
+              <span class="lucky-overlay-badge">✦ ラッキーカラー：<span id="lucky-color-money"></span></span>
+              <span class="lucky-overlay-badge">✦ ラッキーナンバー：<span id="lucky-number-money"></span></span>
+            </div>
+          </div>
+        </div>
+        <div class="fortune-title-below">
+          <h2 class="fortune-title" id="money-title"></h2>
+        </div>
+      </div>
+      <div class="fortune-content card-money">
+        <div class="stars" id="stars-money"></div>
+        <p class="fortune-text" id="text-money"></p>
+      </div>
+      <div class="nav-buttons fortune-nav">
+        <button class="nav-btn back-btn" id="money-back">← 戻る</button>
+        <button class="nav-btn next-btn next-btn-top" id="money-next">🏠 トップへ</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js');
+    }
+  </script>
+</body>
+</html>
